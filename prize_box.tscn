@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://b8y2vmyp4x7dl"]
+
+[ext_resource type="Script" uid="uid://cs8yf7xw3p5km" path="res://prize_box.gd" id="1_prize"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_bounce"]
+friction = 0.5
+bounce = 0.2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_shape"]
+size = Vector3(0.4, 0.4, 0.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_mesh"]
+size = Vector3(0.4, 0.4, 0.4)
+
+[node name="PrizeBox" type="RigidBody3D"]
+physics_material_override = SubResource("PhysicsMaterial_bounce")
+max_contacts_reported = 4
+contact_monitor = true
+script = ExtResource("1_prize")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_shape")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_mesh")
