@@ -1,0 +1,59 @@
+{
+  "income": {
+    "base_coins_per_tick": 1,
+    "base_tick_interval_seconds": 10,
+    "max_offline_hours": 4
+  },
+  "upgrades": [
+    {
+      "id": "coin_boost",
+      "display_name": "Coin Boost",
+      "description": "+1 coin per tick",
+      "effect_type": "income_amount",
+      "base_cost": 15,
+      "cost_growth": 1.18,
+      "effect_per_level": 1,
+      "max_level": 100
+    },
+    {
+      "id": "fast_earnings",
+      "display_name": "Fast Earnings",
+      "description": "5% faster coin ticks per level",
+      "effect_type": "income_speed",
+      "base_cost": 50,
+      "cost_growth": 1.22,
+      "effect_per_level": 0.05,
+      "max_level": 20
+    },
+    {
+      "id": "offline_vault",
+      "display_name": "Offline Vault",
+      "description": "+2 hours offline cap per level",
+      "effect_type": "offline_cap",
+      "base_cost": 200,
+      "cost_growth": 2.0,
+      "effect_per_level": 2,
+      "max_level": 10
+    }
+  ],
+  "store_packs": [],
+  "collections": [
+    {
+      "id": "white_cat_set",
+      "display_name": "White Cat Collector",
+      "slots": [
+        { "prize_id": "fluffy_white_cat" },
+        { "prize_id": "fluffy_white_cat" },
+        { "prize_id": "fluffy_white_cat" },
+        { "prize_id": "fluffy_white_cat" },
+        { "prize_id": "fluffy_white_cat" }
+      ],
+      "reward_coins": 50
+    }
+  ],
+  "daily_quests": [
+    { "id": "play_once", "display_name": "Play a pack once", "reward_coins": 5 },
+    { "id": "unbox_one", "display_name": "Unbox one prize", "reward_coins": 5 },
+    { "id": "earn_coins", "display_name": "Earn 10 coins (idle or play)", "reward_coins": 10, "target": 10 }
+  ]
+}

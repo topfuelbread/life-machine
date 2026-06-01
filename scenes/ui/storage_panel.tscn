@@ -1,0 +1,134 @@
+[gd_scene load_steps=2 format=3 uid="uid://storagepanel01"]
+
+[ext_resource type="Script" path="res://scripts/ui/storage_panel.gd" id="1_storage"]
+
+[node name="StoragePanel" type="PanelContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -240.0
+offset_right = 300.0
+offset_bottom = 240.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_storage")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Margin/VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "Storage"
+
+[node name="CloseButton" type="Button" parent="Margin/VBox/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Close"
+
+[node name="Subtitle" type="Label" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="SortRow" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+
+[node name="SortLabel" type="Label" parent="Margin/VBox/SortRow"]
+layout_mode = 2
+text = "Sort:"
+
+[node name="SortOption" type="OptionButton" parent="Margin/VBox/SortRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Tabs" type="TabContainer" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 300)
+
+[node name="Prizes" type="VBoxContainer" parent="Margin/VBox/Tabs"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="PrizeScroll" type="ScrollContainer" parent="Margin/VBox/Tabs/Prizes"]
+layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 260)
+
+[node name="PrizeGrid" type="GridContainer" parent="Margin/VBox/Tabs/Prizes/PrizeScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 3
+
+[node name="PrizeEmptyLabel" type="Label" parent="Margin/VBox/Tabs/Prizes"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "No prizes yet. Win some from the claw machine!"
+horizontal_alignment = 1
+
+[node name="Containers" type="VBoxContainer" parent="Margin/VBox/Tabs"]
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="ContainerScroll" type="ScrollContainer" parent="Margin/VBox/Tabs/Containers"]
+layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 260)
+
+[node name="ContainerGrid" type="GridContainer" parent="Margin/VBox/Tabs/Containers/ContainerScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="ContainerEmptyLabel" type="Label" parent="Margin/VBox/Tabs/Containers"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "No containers yet."
+horizontal_alignment = 1
+
+[node name="Unopened" type="VBoxContainer" parent="Margin/VBox/Tabs"]
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="UnopenedScroll" type="ScrollContainer" parent="Margin/VBox/Tabs/Unopened"]
+layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 260)
+
+[node name="UnopenedGrid" type="GridContainer" parent="Margin/VBox/Tabs/Unopened/UnopenedScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="UnopenedEmptyLabel" type="Label" parent="Margin/VBox/Tabs/Unopened"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Nothing waiting — win from Select Pack!"
+horizontal_alignment = 1

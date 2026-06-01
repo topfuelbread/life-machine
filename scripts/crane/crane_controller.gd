@@ -18,6 +18,10 @@ var _start_gantry: Vector3 = Vector3.ZERO
 var _grip_close_blend: float = 1.0
 
 var _claw_rig: ClawRig
+var _landing_indicator: ClawLandingIndicator
+var _prize_pin_joint: PinJoint3D
+var _pinned_prize: RigidBody3D
+var _pin_attempted: bool = false
 
 @onready var rail_cart: Node3D = $RailCart
 @onready var joint_anchor: RigidBody3D = $RailCart/JointAnchor
@@ -30,6 +34,7 @@ var _claw_rig: ClawRig
 
 func _ready() -> void:
 	_build_claw_rig()
+	_setup_landing_indicator()
 	_setup_cable_joint()
 
 	var machine := GameState.get_active_machine()
@@ -53,6 +58,13 @@ func _build_claw_rig() -> void:
 	_resize_grab_zone()
 
 
+func _setup_landing_indicator() -> void:
+	_landing_indicator = ClawLandingIndicator.new()
+	_landing_indicator.name = "LandingIndicator"
+	add_child(_landing_indicator)
+	_landing_indicator.setup(claw_hub)
+
+
 func _resize_grab_zone() -> void:
 	var shape_node := _grab_zone.get_node_or_null("CollisionShape3D") as CollisionShape3D
 	if shape_node == null or shape_node.shape == null:
@@ -60,10 +72,11 @@ func _resize_grab_zone() -> void:
 	var sphere := shape_node.shape as SphereShape3D
 	if sphere:
 		sphere.radius = ClawRig.grab_zone_radius()
-	shape_node.position = Vector3(0.0, -ClawRig.CAPSULE_RADIUS * 1.05, 0.0)
+		shape_node.position = ClawRig.get_grasp_center_offset()
 	if palm_ray:
-		palm_ray.target_position = Vector3(0.0, -ClawRig.CAPSULE_RADIUS * 2.6, 0.0)
-		palm_ray.collision_mask = PhysicsLayers.PRIZES | PhysicsLayers.CABINET
+		palm_ray.target_position = Vector3(0.0, -ClawRig.drop_ray_length(), 0.0)
+		# Floor stop only — prizes are pierced during drop so the claw can reach pile depth.
+		palm_ray.collision_mask = PhysicsLayers.CABINET
 
 
 func configure(machine: CraneMachineDefinition) -> void:
@@ -134,22 +147,30 @@ func change_state(new_state: PlayState) -> void:
 			_weak_grip_applied = false
 			_is_payout_win = false
 			_had_prize_at_grab = false
+			_release_pinned_prize()
+			claw_hub.mass = 1.5
 			_apply_grip_strength(_profile.grip_torque_weak)
 			drive_prongs_open()
 			_current_cable_limit = 0.0
 			cable_joint.set("linear_limit_y/lower_distance", 0.0)
 		PlayState.DROP:
+			_release_pinned_prize()
 			_is_payout_win = randf() <= _profile.payout_probability
 			_had_prize_at_grab = false
 			_weak_grip_applied = false
 			_apply_grip_strength(_profile.grip_torque_weak)
 			drive_prongs_open()
 		PlayState.GRAB:
+			_pin_attempted = false
 			_apply_grip_strength(_profile.grip_torque_strong)
 			drive_prongs_close()
+			claw_hub.mass = 3.5
 		PlayState.ASCEND:
+			_pin_attempted = false
 			_apply_grip_strength(_profile.grip_torque_strong)
+			claw_hub.mass = 3.5
 		PlayState.RELEASE:
+			_release_pinned_prize()
 			_apply_grip_strength(_profile.grip_torque_weak)
 			drive_prongs_open()
 
@@ -180,7 +201,7 @@ func _process_idle(delta: float) -> void:
 	_clamp_rail_cart()
 
 	if Input.is_action_just_pressed("ui_accept"):
-		if _machine and not GameState.consume_play(_machine):
+		if not GameState.consume_play(GameState.get_active_pack()):
 			return
 		change_state(PlayState.DROP)
 
@@ -206,12 +227,19 @@ func _should_stop_drop() -> bool:
 	if palm_ray.is_colliding():
 		var collider: Object = palm_ray.get_collider()
 		if collider and not _is_crane_node(collider as Node):
-			return true
+			return _is_cabinet_collider(collider)
+	return false
+
+
+func _is_cabinet_collider(collider: Object) -> bool:
+	if collider is CollisionObject3D:
+		return (collider.collision_layer & PhysicsLayers.CABINET) != 0
 	return false
 
 
 func _process_grab(_delta: float) -> void:
 	drive_prongs_close()
+	claw_hub.sleeping = false
 	if _state_timer >= _profile.min_grab_overlap_seconds and _is_holding_prize():
 		_had_prize_at_grab = true
 	if _state_timer >= _profile.grab_close_duration:
@@ -219,10 +247,16 @@ func _process_grab(_delta: float) -> void:
 
 
 func _process_ascend(delta: float) -> void:
-	if not _weak_grip_applied and _state_timer >= _profile.weak_grip_delay:
+	claw_hub.sleeping = false
+	if not _pin_attempted:
+		_pin_attempted = true
+		if _had_prize_at_grab or _is_holding_prize():
+			_try_pin_nearest_prize()
+	if not _weak_grip_applied and _profile.rigged_weak_grip and _state_timer >= _profile.weak_grip_delay:
 		_weak_grip_applied = true
 		if not (_is_payout_win and _profile.strong_grip_on_payout):
 			_apply_grip_strength(_profile.grip_torque_weak)
+			_release_pinned_prize()
 
 	_current_cable_limit = move_toward(
 		_current_cable_limit,
@@ -324,3 +358,41 @@ func drive_prongs_open() -> void:
 
 func get_profile_display_name() -> String:
 	return _profile.display_name if _profile else ""
+
+
+func _try_pin_nearest_prize() -> void:
+	if _pinned_prize != null and is_instance_valid(_pinned_prize):
+		return
+	var best: RigidBody3D = null
+	var best_dist := INF
+	for body in _grab_zone.get_overlapping_bodies():
+		if not body is RigidBody3D or _is_crane_node(body):
+			continue
+		if not body.has_meta("prize_id"):
+			continue
+		var dist := claw_hub.global_position.distance_squared_to(body.global_position)
+		if dist < best_dist:
+			best_dist = dist
+			best = body
+	if best == null:
+		return
+	_release_pinned_prize()
+	var pin := PinJoint3D.new()
+	pin.name = "PrizePinJoint"
+	add_child(pin)
+	pin.node_a = claw_hub.get_path()
+	pin.node_b = pin.get_path_to(best)
+	pin.global_position = best.global_position
+	# Joint3D default: exclude_nodes_from_collision = true (claw + prize don't fight the pin).
+	_prize_pin_joint = pin
+	_pinned_prize = best
+	best.sleeping = false
+	best.apply_central_impulse(Vector3.ZERO)
+	claw_hub.sleeping = false
+
+
+func _release_pinned_prize() -> void:
+	if _prize_pin_joint != null and is_instance_valid(_prize_pin_joint):
+		_prize_pin_joint.queue_free()
+	_prize_pin_joint = null
+	_pinned_prize = null

@@ -37,15 +37,15 @@ size = Vector3(0.08, 1.35, 1.1)
 size = Vector3(1.1, 1.35, 0.08)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hub"]
-size = Vector3(0.3, 0.12, 0.3)
+size = Vector3(0.4, 0.16, 0.4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_carriage"]
-size = Vector3(0.35, 0.15, 0.35)
+size = Vector3(0.48, 0.2, 0.48)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_hub"]
-top_radius = 0.09
-bottom_radius = 0.13
-height = 0.14
+top_radius = 0.12
+bottom_radius = 0.18
+height = 0.19
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_carriage"]
 albedo_color = Color(0.75, 0.75, 0.78, 1)
@@ -54,7 +54,7 @@ albedo_color = Color(0.75, 0.75, 0.78, 1)
 albedo_color = Color(0.85, 0.15, 0.12, 1)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_grab"]
-radius = 0.3
+radius = 0.45
 
 [node name="Main" type="Node3D" unique_id=2054703472]
 script = ExtResource("1_main")
@@ -181,7 +181,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_carriage")
 
 [node name="PalmRaycast" type="RayCast3D" parent="CraneSystem/ClawAssembly" unique_id=1060102480]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
-target_position = Vector3(0, -0.58, 0)
+target_position = Vector3(0, -1.05, 0)
 collision_mask = 1
 
 [node name="GrabZone" type="Area3D" parent="CraneSystem/ClawAssembly" unique_id=900010]
@@ -190,7 +190,7 @@ collision_mask = 1
 monitoring = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CraneSystem/ClawAssembly/GrabZone" unique_id=900011]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.23, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.42, 0)
 shape = SubResource("SphereShape3D_grab")
 
 [connection signal="body_entered" from="ChuteArea" to="." method="_on_chute_area_body_entered"]

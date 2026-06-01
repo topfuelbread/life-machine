@@ -1,0 +1,41 @@
+[gd_scene load_steps=2 format=3 uid="uid://bfcikua8uw6fc"]
+
+[ext_resource type="Script" path="res://scripts/ui/prize_win_flash.gd" id="1_flash"]
+
+[node name="PrizeWinFlash" type="CanvasLayer"]
+layer = 60
+visible = false
+script = ExtResource("1_flash")
+
+[node name="Overlay" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Center" type="CenterContainer" parent="Overlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="FlashHost" type="Control" parent="Overlay/Center"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+
+[node name="PrizeTexture" type="TextureRect" parent="Overlay/Center/FlashHost"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5

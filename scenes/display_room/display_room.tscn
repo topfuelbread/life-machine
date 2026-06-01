@@ -1,0 +1,249 @@
+[gd_scene load_steps=9 format=3 uid="uid://displayroom01"]
+
+[ext_resource type="Script" path="res://scenes/display_room/display_room.gd" id="1_room"]
+[ext_resource type="PackedScene" uid="uid://whiteroomboard3d" path="res://scenes/display_room/white_room_board_3d.tscn" id="9_room3d"]
+[ext_resource type="PackedScene" uid="uid://storagepanel01" path="res://scenes/ui/storage_panel.tscn" id="2_storage"]
+[ext_resource type="PackedScene" uid="uid://packselector01" path="res://scenes/ui/pack_selector_popup.tscn" id="3_pack"]
+[ext_resource type="PackedScene" uid="uid://statboardpopup01" path="res://scenes/ui/stat_board_popup.tscn" id="4_stat"]
+[ext_resource type="PackedScene" uid="uid://stickerhovertip01" path="res://scenes/ui/sticker_hover_tooltip.tscn" id="5_tip"]
+[ext_resource type="PackedScene" uid="uid://storepopup01" path="res://scenes/ui/store_popup.tscn" id="6_store"]
+[ext_resource type="PackedScene" uid="uid://collectionspopup01" path="res://scenes/ui/collections_popup.tscn" id="7_coll"]
+[ext_resource type="PackedScene" uid="uid://unboxpopup01" path="res://scenes/ui/unbox_popup.tscn" id="8_unbox"]
+
+[node name="DisplayRoom" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_room")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.16, 0.15, 0.2, 1)
+
+[node name="TopBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 24.0
+offset_top = 8.0
+offset_right = -24.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_constants/separation = 12
+
+[node name="PrevRoomButton" type="Button" parent="TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "◀"
+
+[node name="RoomTitleLabel" type="Label" parent="TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "Room 1"
+horizontal_alignment = 1
+
+[node name="NextRoomButton" type="Button" parent="TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "▶"
+
+[node name="CoinsLabel" type="Label" parent="TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Coins: 0"
+
+[node name="DailyLabel" type="Label" parent="TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Daily 0/3"
+
+[node name="DisplayBoard" type="Panel" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 48.0
+offset_top = 72.0
+offset_right = -48.0
+offset_bottom = -120.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Room3DViewport" type="SubViewportContainer" parent="DisplayBoard"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="DisplayBoard/Room3DViewport"]
+handle_input_locally = false
+size = Vector2i(1152, 648)
+render_target_update_mode = 4
+
+[node name="WhiteRoomBoard3D" parent="DisplayBoard/Room3DViewport/SubViewport" instance=ExtResource("9_room3d")]
+
+[node name="BoardFill" type="ColorRect" parent="DisplayBoard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.22, 0.21, 0.28, 1)
+
+[node name="StickerLayer" type="Control" parent="DisplayBoard"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="EditActions" type="HBoxContainer" parent="DisplayBoard"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -180.0
+offset_top = -44.0
+offset_right = 180.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="SendBackwardButton" type="Button" parent="DisplayBoard/EditActions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Back"
+
+[node name="PutAwayButton" type="Button" parent="DisplayBoard/EditActions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Put Away"
+
+[node name="BringForwardButton" type="Button" parent="DisplayBoard/EditActions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Front"
+
+[node name="PlacementHint" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -320.0
+offset_top = 44.0
+offset_right = 320.0
+offset_bottom = 68.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
+
+[node name="BottomBar" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -112.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 8
+
+[node name="StorageButton" type="Button" parent="BottomBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 44)
+layout_mode = 2
+text = "Storage"
+
+[node name="StoreButton" type="Button" parent="BottomBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 44)
+layout_mode = 2
+text = "Store"
+
+[node name="CollectionsButton" type="Button" parent="BottomBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(110, 44)
+layout_mode = 2
+text = "Collections"
+
+[node name="Spacer" type="Control" parent="BottomBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RightButtons" type="HBoxContainer" parent="BottomBar"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="StatBoardButton" type="Button" parent="BottomBar/RightButtons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 44)
+layout_mode = 2
+text = "Stats"
+
+[node name="PackButton" type="Button" parent="BottomBar/RightButtons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 44)
+layout_mode = 2
+text = "Select Pack"
+
+[node name="StoragePanel" parent="." instance=ExtResource("2_storage")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="PackSelectorPopup" parent="." instance=ExtResource("3_pack")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="StorePopup" parent="." instance=ExtResource("6_store")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="CollectionsPopup" parent="." instance=ExtResource("7_coll")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="StatBoardPopup" parent="." instance=ExtResource("4_stat")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="UnboxPopup" parent="." instance=ExtResource("8_unbox")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="StickerHoverTooltip" parent="." instance=ExtResource("5_tip")]
+unique_name_in_owner = true
+layout_mode = 0

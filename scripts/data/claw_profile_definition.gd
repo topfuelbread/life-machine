@@ -14,6 +14,8 @@ extends Resource
 @export var weak_grip_delay: float = 0.35
 ## If true, a payout roll keeps strong grip until the prize chute release.
 @export var strong_grip_on_payout: bool = true
+## If true, grip weakens mid-ascend so prizes can slip (arcade rigging).
+@export var rigged_weak_grip: bool = true
 
 @export_group("Prongs")
 @export var prong_close_speed: float = 2.4
@@ -26,8 +28,8 @@ extends Resource
 @export var transit_move_speed: float = 1.5
 @export var hoist_drop_speed: float = 1.6
 @export var hoist_ascend_speed: float = 1.5
-@export var max_drop_depth: float = -2.2
-@export var max_drop_seconds: float = 3.5
+@export var max_drop_depth: float = -3.2
+@export var max_drop_seconds: float = 4.0
 @export var drop_settle_seconds: float = 0.12
 @export var max_ascend_seconds: float = 3.0
 

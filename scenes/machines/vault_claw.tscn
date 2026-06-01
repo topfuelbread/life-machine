@@ -1,0 +1,197 @@
+[gd_scene format=3 uid="uid://b8vaultclaw01"]
+
+[ext_resource type="Script" uid="uid://d0rsid657k78w" path="res://main.gd" id="1_main"]
+[ext_resource type="Script" uid="uid://bu3msxundfe6j" path="res://scripts/crane/crane_controller.gd" id="2_claw"]
+[ext_resource type="Script" uid="uid://vo1l4yljvla4" path="res://prize_spawner.gd" id="3_spawner"]
+
+[sub_resource type="Environment" id="Environment_vault"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_floor"]
+size = Vector3(5, 0.5, 5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor_vault"]
+albedo_color = Color(0.22, 0.14, 0.32, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor_col"]
+size = Vector3(5, 0.5, 5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_lr"]
+size = Vector3(0.2, 3, 5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_fb"]
+size = Vector3(5, 3, 0.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_chute_bounds"]
+size = Vector3(1.2, 1.5, 1.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_chute_visual"]
+size = Vector3(1.2, 1.5, 1.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_chute_vault"]
+albedo_color = Color(0.85, 0.65, 0.15, 0.25)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_chute_floor"]
+size = Vector3(1.1, 0.08, 1.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_chute_wall_lr"]
+size = Vector3(0.08, 1.35, 1.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_chute_wall_fb"]
+size = Vector3(1.1, 1.35, 0.08)
+
+[sub_resource type="BoxMesh" id="BoxMesh_carriage"]
+size = Vector3(0.48, 0.2, 0.48)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_carriage_vault"]
+albedo_color = Color(0.88, 0.72, 0.28, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hub"]
+size = Vector3(0.4, 0.16, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rope_vault"]
+albedo_color = Color(0.55, 0.32, 0.78, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_hub"]
+top_radius = 0.12
+bottom_radius = 0.18
+height = 0.19
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_grab"]
+radius = 0.45
+
+[node name="Main" type="Node3D" unique_id=535254622]
+script = ExtResource("1_main")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=608822965]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 5, 0)
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1336483208]
+transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 2.5, 4.5)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1170846915]
+environment = SubResource("Environment_vault")
+
+[node name="Floor" type="StaticBody3D" parent="." unique_id=52171745]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+collision_layer = 8
+collision_mask = 0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=1746506387]
+mesh = SubResource("BoxMesh_floor")
+surface_material_override/0 = SubResource("StandardMaterial3D_floor_vault")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=805664476]
+shape = SubResource("BoxShape3D_floor_col")
+
+[node name="Wall_Left" type="CollisionShape3D" parent="Floor" unique_id=1012097878]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 1.5, 0)
+shape = SubResource("BoxShape3D_wall_lr")
+
+[node name="Wall_Right" type="CollisionShape3D" parent="Floor" unique_id=1123148490]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 1.5, 0)
+shape = SubResource("BoxShape3D_wall_lr")
+
+[node name="Wall_Back" type="CollisionShape3D" parent="Floor" unique_id=1417849761]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -2.5)
+shape = SubResource("BoxShape3D_wall_fb")
+
+[node name="Wall_Front" type="CollisionShape3D" parent="Floor" unique_id=1983013415]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 2.5)
+shape = SubResource("BoxShape3D_wall_fb")
+
+[node name="PrizeSpawner" type="Marker3D" parent="." unique_id=1755684259]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+script = ExtResource("3_spawner")
+pile_count = 28
+
+[node name="ChuteArea" type="Area3D" parent="." unique_id=1104231185]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 0.5, 1.8)
+collision_layer = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChuteArea" unique_id=1181318703]
+shape = SubResource("BoxShape3D_chute_bounds")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ChuteArea" unique_id=1407903549]
+mesh = SubResource("BoxMesh_chute_visual")
+surface_material_override/0 = SubResource("StandardMaterial3D_chute_vault")
+
+[node name="ChuteCollider" type="StaticBody3D" parent="ChuteArea" unique_id=1342873563]
+collision_layer = 8
+collision_mask = 0
+
+[node name="Floor" type="CollisionShape3D" parent="ChuteArea/ChuteCollider" unique_id=1451403784]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.71, 0)
+shape = SubResource("BoxShape3D_chute_floor")
+
+[node name="WallLeft" type="CollisionShape3D" parent="ChuteArea/ChuteCollider" unique_id=1181265986]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.59, -0.05, 0)
+shape = SubResource("BoxShape3D_chute_wall_lr")
+
+[node name="WallRight" type="CollisionShape3D" parent="ChuteArea/ChuteCollider" unique_id=2013483766]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.59, -0.05, 0)
+shape = SubResource("BoxShape3D_chute_wall_lr")
+
+[node name="WallBack" type="CollisionShape3D" parent="ChuteArea/ChuteCollider" unique_id=770105239]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, -0.59)
+shape = SubResource("BoxShape3D_chute_wall_fb")
+
+[node name="WallFront" type="CollisionShape3D" parent="ChuteArea/ChuteCollider" unique_id=1245973944]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0.59)
+shape = SubResource("BoxShape3D_chute_wall_fb")
+
+[node name="CraneSystem" type="Node3D" parent="." unique_id=422451312]
+script = ExtResource("2_claw")
+
+[node name="RailCart" type="Node3D" parent="CraneSystem" unique_id=649014944]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.4, 0)
+
+[node name="CarriageMesh" type="MeshInstance3D" parent="CraneSystem/RailCart" unique_id=335299362]
+mesh = SubResource("BoxMesh_carriage")
+surface_material_override/0 = SubResource("StandardMaterial3D_carriage_vault")
+
+[node name="JointAnchor" type="RigidBody3D" parent="CraneSystem/RailCart" unique_id=19658990]
+collision_layer = 0
+collision_mask = 0
+freeze = true
+freeze_mode = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CraneSystem/RailCart/JointAnchor" unique_id=21858559]
+shape = SubResource("BoxShape3D_hub")
+
+[node name="RopeVisual" type="CSGCylinder3D" parent="CraneSystem/RailCart" unique_id=1529310209]
+radius = 0.012
+height = 0.35
+material = SubResource("StandardMaterial3D_rope_vault")
+
+[node name="HoistCableJoint" type="Generic6DOFJoint3D" parent="CraneSystem/RailCart" unique_id=406149333]
+node_a = NodePath("../JointAnchor")
+node_b = NodePath("../../ClawAssembly")
+
+[node name="ClawAssembly" type="RigidBody3D" parent="CraneSystem" unique_id=958553259]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
+collision_layer = 2
+collision_mask = 9
+mass = 1.5
+can_sleep = false
+linear_damp = 1.0
+angular_damp = 4.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CraneSystem/ClawAssembly" unique_id=1412439416]
+shape = SubResource("BoxShape3D_hub")
+
+[node name="HubMesh" type="MeshInstance3D" parent="CraneSystem/ClawAssembly" unique_id=620445932]
+mesh = SubResource("CylinderMesh_hub")
+surface_material_override/0 = SubResource("StandardMaterial3D_carriage_vault")
+
+[node name="PalmRaycast" type="RayCast3D" parent="CraneSystem/ClawAssembly" unique_id=1380199226]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+target_position = Vector3(0, -1.05, 0)
+
+[node name="GrabZone" type="Area3D" parent="CraneSystem/ClawAssembly" unique_id=1163438760]
+collision_layer = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CraneSystem/ClawAssembly/GrabZone" unique_id=387355306]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.42, 0)
+shape = SubResource("SphereShape3D_grab")
+
+[connection signal="body_entered" from="ChuteArea" to="." method="_on_chute_area_body_entered"]

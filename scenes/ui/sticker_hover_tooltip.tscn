@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://x48h3ll23f41"]
+
+[ext_resource type="Script" path="res://scripts/ui/sticker_hover_tooltip.gd" id="1_tip"]
+
+[node name="StickerHoverTooltip" type="PanelContainer"]
+z_index = 200
+mouse_filter = 2
+script = ExtResource("1_tip")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="InfoLabel" type="Label" parent="Margin"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Sticker info"
